@@ -62,6 +62,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     @Bind(R.id.toolbar)
     Toolbar toolbar;
 
+    private final String mPeriodicTag = "periodic";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +133,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                                     } else {
                                         // Add the stock to DB
                                         mServiceIntent.putExtra("tag", "add");
-                                        mServiceIntent.putExtra("symbol", input.toString());
+                                        mServiceIntent.putExtra(QuoteColumns.SYMBOL, input.toString());
                                         startService(mServiceIntent);
                                     }
                                 }
@@ -152,7 +153,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         if (isConnected()) {
             long period = 3600L;
             long flex = 10L;
-            String periodicTag = "periodic";
 
             // create a periodic task to pull stocks once every hour after the app has been opened. This
             // is so Widget data stays up to date.
@@ -160,7 +160,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                     .setService(StockTaskService.class)
                     .setPeriod(period)
                     .setFlex(flex)
-                    .setTag(periodicTag)
+
+                    .setTag(mPeriodicTag)
                     .setRequiredNetwork(Task.NETWORK_STATE_CONNECTED)
                     .setRequiresCharging(false)
                     .build();

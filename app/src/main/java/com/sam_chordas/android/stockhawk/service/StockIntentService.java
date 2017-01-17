@@ -11,6 +11,11 @@ import com.google.android.gms.gcm.TaskParams;
  */
 public class StockIntentService extends IntentService {
 
+  private static final String TAG = "StockIntentService";
+  private final String _TAG = "tag";
+  private final String _SYMBOL = "symbol";
+  private final String _ADD = "add";
+
   public StockIntentService(){
     super(StockIntentService.class.getName());
   }
@@ -20,14 +25,14 @@ public class StockIntentService extends IntentService {
   }
 
   @Override protected void onHandleIntent(Intent intent) {
-    Log.d(StockIntentService.class.getSimpleName(), "Stock Intent Service");
+    Log.d(TAG, "onHandleIntent");
     StockTaskService stockTaskService = new StockTaskService(this);
     Bundle args = new Bundle();
-    if (intent.getStringExtra("tag").equals("add")){
-      args.putString("symbol", intent.getStringExtra("symbol"));
+    if (intent.getStringExtra(_TAG).equals(_ADD)){
+      args.putString(_SYMBOL, intent.getStringExtra(_SYMBOL));
     }
     // We can call OnRunTask from the intent service to force it to run immediately instead of
     // scheduling a task.
-    stockTaskService.onRunTask(new TaskParams(intent.getStringExtra("tag"), args));
+    stockTaskService.onRunTask(new TaskParams(intent.getStringExtra(_TAG), args));
   }
 }

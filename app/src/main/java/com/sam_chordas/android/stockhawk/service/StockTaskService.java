@@ -44,6 +44,12 @@ public class StockTaskService extends GcmTaskService {
     private StringBuilder mStoredSymbols = new StringBuilder();
     private boolean isUpdate;
 
+    private final String _DATA_REPLACE_TAG = "_data";
+    private final String _SYMBOL = "symbol";
+    private final String _ADD = "add";
+    private final String NOT_FOUND_ACTION = "com.sam_chordas.android.stockhawk.STOCK_WAS_NOT_FOUND";
+    private final String DEFAULT_STOCKS = "\"YHOO\",\"AAPL\",\"GOOG\",\"MSFT\"";
+
     public StockTaskService() {
     }
 
@@ -80,18 +86,19 @@ public class StockTaskService extends GcmTaskService {
                 String data = "";
                 int count = 0;
                 if (initQueryCursor.getCount() == 0 || initQueryCursor == null) {
-                    data = YahooFinanceAPIHelper.QUERY_QUOTES.replace("_data", "\"YHOO\",\"AAPL\",\"GOOG\",\"MSFT\"");
+                    data = YahooFinanceAPIHelper.QUERY_QUOTES.replace(_DATA_REPLACE_TAG, DEFAULT_STOCKS);
                     count = 4;
                 } else if (initQueryCursor != null) {
                     DatabaseUtils.dumpCursor(initQueryCursor);
                     initQueryCursor.moveToFirst();
                     for (int i = 0; i < initQueryCursor.getCount(); i++) {
                         mStoredSymbols.append("\"" +
-                                initQueryCursor.getString(initQueryCursor.getColumnIndex("symbol")) + "\",");
+                                initQueryCursor.getString(initQueryCursor.getColumnIndex(_SYMBOL)) + "\",");
                         initQueryCursor.moveToNext();
                     }
                     mStoredSymbols.replace(mStoredSymbols.length() - 1, mStoredSymbols.length(), "");
-                    data = YahooFinanceAPIHelper.QUERY_QUOTES.replace("_data", mStoredSymbols.toString());
+                    data = YahooFinanceAPIHelper.QUERY_QUOTES.replace(_DATA_REPLACE_TAG, mStoredSymbols.toString());
+
                     count = initQueryCursor.getCount();
                 }
                 if (count > 1) {
@@ -114,7 +121,7 @@ public class StockTaskService extends GcmTaskService {
                                 } else {
                                     result = GcmNetworkManager.RESULT_FAILURE;
                                     Intent intent = new Intent();
-                                    intent.setAction("com.sam_chordas.android.stockhawk.STOCK_WAS_NOT_FOUND");
+                                    intent.setAction(NOT_FOUND_ACTION);
                                     mContext.sendBroadcast(intent);
                                 }
                             } catch (RemoteException | OperationApplicationException e) {
@@ -146,7 +153,7 @@ public class StockTaskService extends GcmTaskService {
                                 } else {
                                     result = GcmNetworkManager.RESULT_FAILURE;
                                     Intent intent = new Intent();
-                                    intent.setAction("com.sam_chordas.android.stockhawk.STOCK_WAS_NOT_FOUND");
+                                    intent.setAction(NOT_FOUND_ACTION);
                                     mContext.sendBroadcast(intent);
                                 }
                             } catch (RemoteException | OperationApplicationException e) {
@@ -163,8 +170,8 @@ public class StockTaskService extends GcmTaskService {
             case "add":
                 isUpdate = false;
                 // get symbol from params.getExtra and build query
-                String stockInput = params.getExtras().getString("symbol");
-                data = YahooFinanceAPIHelper.QUERY_QUOTES.replace("_data", "\"" + stockInput + "\"");
+                String stockInput = params.getExtras().getString(_SYMBOL);
+                data = YahooFinanceAPIHelper.QUERY_QUOTES.replace(_DATA_REPLACE_TAG, "\"" + stockInput + "\"");
                 YahooFinance.queryApi(YahooFinanceQueryAPI.STOCK_BASE_URL).getStockData(data, new Callback<QueryBase>() {
                     @Override
                     public void success(QueryBase queryBase, retrofit.client.Response response) {
@@ -186,7 +193,7 @@ public class StockTaskService extends GcmTaskService {
                             } else {
                                 result = GcmNetworkManager.RESULT_FAILURE;
                                 Intent intent = new Intent();
-                                intent.setAction("com.sam_chordas.android.stockhawk.STOCK_WAS_NOT_FOUND");
+                                intent.setAction(NOT_FOUND_ACTION);
                                 mContext.sendBroadcast(intent);
                             }
                         } catch (RemoteException | OperationApplicationException e) {
