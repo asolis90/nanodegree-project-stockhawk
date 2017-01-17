@@ -9,8 +9,8 @@
     <string name="content_test" translatable="true">Search for a Stock Symbol</string>
     <string name="input_hint" translatable="false">FB</string>
     <string name="input_prefill"></string>
-    <string name="network_toast" translatable="true">Uh-oh! This app requires an internet connection</string>
-    <string name="network_erorr" translatable="true">No Internet Connection!</string>
+    <string name="network_toast" translatable="true">This app requires an internet connection</string>
+    <string name="network_error" translatable="true">No Internet Connection!</string>
     <string name="stock_already_exist" translatable="true">This stock is already saved!</string>
     <string name="stock_not_found">The stock suggested was not found.</string>
     <string name="tv_set_background_resource">setBackgroundResource</string>

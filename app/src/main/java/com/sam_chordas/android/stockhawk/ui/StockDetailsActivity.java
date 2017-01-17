@@ -67,6 +67,10 @@ public class StockDetailsActivity extends AppCompatActivity implements TabHost.O
     private final String ONE_MONTH = "1 Month";
     private final String ONE_YEAR = "1 Year";
 
+    private final String START_DATE_REPLACE_TAG = "_start_date";
+    private final String END_DATE_REPLACE_TAG = "_end_date";
+    private final String SYMBOL_REPLACE_TAG = "_symbol";
+
     @Bind(R.id.activity_coordinator_layout)
     CoordinatorLayout coordinatorLayout;
     @Bind(R.id.toolbar)
@@ -191,9 +195,9 @@ public class StockDetailsActivity extends AppCompatActivity implements TabHost.O
         String startDate = sdf.format(start);
         String endDate = sdf.format(end);
 
-        String data = YahooFinanceAPIHelper.QUERY_HISTORICAL_DATA.replace("_symbol", mSymbol);
-        data = data.replace("_start_date", endDate);
-        data = data.replace("_end_date", startDate);
+        String data = YahooFinanceAPIHelper.QUERY_HISTORICAL_DATA.replace(SYMBOL_REPLACE_TAG, mSymbol);
+        data = data.replace(START_DATE_REPLACE_TAG, endDate);
+        data = data.replace(END_DATE_REPLACE_TAG, startDate);
 
         if (isConnected()) {
             textViewNetworkError.setVisibility(View.GONE);
